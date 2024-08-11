@@ -9,6 +9,7 @@
   "author": "ByteChain Labs",
   "license": "ISC",
   "dependencies": {
+    "elliptic": "^6.5.6",
     "express": "^4.19.2",
     "sha256": "^0.2.0",
     "ws": "^8.18.0"

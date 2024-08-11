@@ -4,7 +4,7 @@ class VirtualMachine {
         this.state = {}; // Stores contract states
     }
 
-    executeContract(transaction) {
+    ExecuteContract(transaction) {
         if (!transaction.data || typeof transaction.data.code !== 'string') {
             console.log('No valid contract code found.');
             return false;
@@ -17,10 +17,10 @@ class VirtualMachine {
                 fromAddress: transaction.fromAddress,
                 toAddress: transaction.toAddress,
                 amount: transaction.amount,
-                send: this.send.bind(this)
+                send: this.Send.bind(this)
             };
 
-            const func = new Function('context', transaction.data.code);
+            const func = new Function(context, transaction.data.code);
             func(context);
 
             return true;
@@ -30,15 +30,16 @@ class VirtualMachine {
         }
     }
 
-    send(fromAddress, toAddress, amount) {
+    Send(fromAddress, toAddress, amount) {
         const transaction = new Transaction(fromAddress, toAddress, amount);
-        transaction.signTransaction(ec.keyFromPrivate(fromAddress));
+        transaction.SignTransaction(ec.keyFromPrivate(fromAddress));
 
-        if (transaction.isValid()) {
-            this.blockchain.addTransaction(transaction);
+        if (transaction.IsValidTransaction()) {
+            this.blockchain.AddNewTransaction(transaction);
             console.log(`Transaction from ${fromAddress} to ${toAddress} for amount ${amount} executed.`);
         } else {
             console.log('Transaction failed to execute due to invalid signature.');
         }
     }
 }
+

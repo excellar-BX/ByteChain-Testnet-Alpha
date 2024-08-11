@@ -14,8 +14,8 @@ class Block {
 
     //Method to hash a block
     HashBlock() {
-        let dataAsString = `${this.blockHeight}${this.nonce}${JSON.stringify(this.transactions)}${this.merkleroot}${this.prevBlockHash}`;
-        this.blockHash = hashFunc(dataAsString);
+        let blockDataAsString = `${this.blockHeight}${this.nonce}${JSON.stringify(this.transactions)}${this.merkleroot}${this.prevBlockHash}`;
+        this.blockHash = hashFunc(blockDataAsString);
         return this.blockHash;
     }
 

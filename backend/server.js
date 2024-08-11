@@ -25,12 +25,31 @@ app.post('/transaction', (req, res) => {
     })
 });
 
+app.post('/create-wallet', (req, res) => {
+    const keyPair = ec.genKeyPair();
+    const privateKey = keyPair.getPrivate('hex');
+    const publicKey = keyPair.getPublic('hex');
+    res.json({ privateKey, publicKey });
+});
+
+app.post('/sign-transaction', (req, res) => {
+    
+});
+
+app.post('/verify-signature', (req, res) => {
+    const { publicKey, message, signature } = req.body;
+    const keyPair = ec.keyFromPublic(publicKey, 'hex');
+    const msgHash = ec.hash().update(message).digest('hex');
+    const isValid = keyPair.verify(msgHash, signature);
+    res.json({ isValid });
+});
+
 // app.get('./balance', ())
 
-setInterval(() => {
-    bytechain.Mine()
-    console.log(bytechain);
-}, mining_timer);
+// setInterval(() => {
+//     bytechain.Mine()
+//     console.log(bytechain);
+// }, mining_timer);
 
 app.listen(port, () => {
     log(`Server listening on port ${port}`)
