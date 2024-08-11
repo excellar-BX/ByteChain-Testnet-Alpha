@@ -1,8 +1,8 @@
 # Explanation
 ByteChain will consist of four phases of development which are:
-**-ByteChain-Testnet-Alpha**
-**-ByteChain-Testnet-Beta**
-**-ByteChain-Testnet-Delta**
+**-ByteChain-Testnet-Alpha**,
+**-ByteChain-Testnet-Beta**,
+**-ByteChain-Testnet-Delta**,
 **-ByteChain-Mainnet**
 
 # ByteChain-Testnet-Alpha
