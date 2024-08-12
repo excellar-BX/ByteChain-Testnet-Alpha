@@ -1,3 +1,4 @@
+//Importing the block and transaction class
 const Block = require('./block');
 const Transaction = require('./transaction');
 
@@ -5,9 +6,16 @@ const Transaction = require('./transaction');
 const BlockChainAddress = '0000000000000000000000000000000000000000000000000000000BYTECHAIN';
 const MiningReward = 2000;
 
+const GenesisTransactionAmount = 0;
+const GenesisTransactionSender = 'GenesisSender';
+const GenesisTransactionRecipient = 'GenesisRecipient'; 
+const GenesisBlockPrevHash = '0'.repeat(64)
+
+const minerBlockChainAddress = '040f144abd3b329eb42d17724517ca39fb4772238a5533354c7f626b654becad6c74a6ec0bb96796232c91fdb2fb5ed163b91772363608875fa86da8718140f01c'
+
 //BlockChain class
 class BlockChain {
-    constructor (minerBlockChainAddress) {
+    constructor () {
         this.chain = [];
         this.transactionPool = [];
         this.minerBlockChainAddress = minerBlockChainAddress
@@ -16,9 +24,12 @@ class BlockChain {
 
     //Creating genesis block
     GenesisBlock() {
-        const transactions = [new Transaction(10, 'ryuiwehiuawyudhwehduiwdfiweguiodhuiwu', 'gdwudyuiwhhff3y478y78weyuify4783y783')];
-        const prevBlockHash = 'BYTECHAINGENESISBLOCK';
-        const genesisBlock = new Block((this.chain.length + 1), transactions, prevBlockHash);
+        const genesisTransaction = new Transaction(
+            GenesisTransactionAmount,
+            GenesisTransactionSender,
+            GenesisTransactionRecipient
+        );
+        const genesisBlock = new Block(0, [genesisTransaction], GenesisBlockPrevHash);
         genesisBlock.ProofOfWork();
         this.chain.push(genesisBlock);
     }
@@ -31,6 +42,9 @@ class BlockChain {
     //Creating and Adding a new transaction to the transaction pool
     AddNewTransaction(amount, sender, recipient) {
         const transaction = new Transaction(amount, sender, recipient);
+        if (!transaction.IsValidTransaction()) {
+            throw new Error('Invalid transaction');
+        }
         this.transactionPool.push(transaction);
         return transaction;
     }
@@ -64,22 +78,40 @@ class BlockChain {
                 const amount = transaction.amount;
                 const sender = transaction.sender;
                 const recipient = transaction.recipient;
-                if(blockChainAddress === sender) {
+                if (blockChainAddress === sender) {
                     balance -= amount;
                 } else if (blockChainAddress === recipient) {
                     balance += amount;
                 }                
             });
         });
-        return balance + '.000';
+        return balance.toFixed(8);
+    }
+
+    IsChainValid() {
+        for (let i = 1; i < this.chain.length; i++) {
+            const currentBlock = this.chain[i];
+            const prevBlock = this.chain[i -1];
+
+            if (!(currentBlock instanceof Block) || !(prevBlock instanceof Block)) {
+                return false;
+            }
+            if (!currentBlock.ContainValidTransactions()) {
+                return false
+            }
+
+            if (currentBlock.blockHash !== currentBlock.HashBlock()) {
+                return false
+            }
+
+            if (currentBlock.prevBlockHash !== prevBlock.blockHash) {
+                return false
+            }
+        }
+        return true;
     }
 }
 
 
-// let myAddress = 'hduihwuiodfhuuio2u3iou39unp34iu03iouimi9u389u8ouf';
-// const blockchain = new BlockChain(myAddress);
-// blockchain.Mine();
-
-// console.log(blockchain);
 
 module.exports = BlockChain;

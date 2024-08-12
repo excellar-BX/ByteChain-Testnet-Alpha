@@ -1,7 +1,7 @@
 const BlockChain = require('./core/blockchain');
 const express = require('express');
 const app = express();
-const port = 3000;
+const port = process.env.port || 3000;
 
 const minerBlockChainAddress = 'BlockChainminerBlockChainAddress';
 
@@ -25,32 +25,14 @@ app.post('/transaction', (req, res) => {
     })
 });
 
-app.post('/create-wallet', (req, res) => {
-    const keyPair = ec.genKeyPair();
-    const privateKey = keyPair.getPrivate('hex');
-    const publicKey = keyPair.getPublic('hex');
-    res.json({ privateKey, publicKey });
-});
-
-app.post('/sign-transaction', (req, res) => {
-    
-});
-
-app.post('/verify-signature', (req, res) => {
-    const { publicKey, message, signature } = req.body;
-    const keyPair = ec.keyFromPublic(publicKey, 'hex');
-    const msgHash = ec.hash().update(message).digest('hex');
-    const isValid = keyPair.verify(msgHash, signature);
-    res.json({ isValid });
-});
-
 // app.get('./balance', ())
 
-// setInterval(() => {
-//     bytechain.Mine()
-//     console.log(bytechain);
-// }, mining_timer);
+setInterval(() => {
+    bytechain.Mine()
+    console.log(bytechain);
+    console.log(bytechain.CalculateBalance('040f144abd3b329eb42d17724517ca39fb4772238a5533354c7f626b654becad6c74a6ec0bb96796232c91fdb2fb5ed163b91772363608875fa86da8718140f01c'));
+}, mining_timer);
 
 app.listen(port, () => {
-    log(`Server listening on port ${port}`)
+    console.log(`Server listening on port ${port}`)
 });

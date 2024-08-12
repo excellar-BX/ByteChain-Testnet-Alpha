@@ -1,46 +1,50 @@
-// const elliptic = require('elliptic').ec;
-// const ec = new elliptic('secp256k1');
-
+const BlockChain = require('../core/blockchain');
 const Wallet = require('./src/wallet');
+const express = require('express');
+const app = express();
+const port = process.env.port || 3001;
+
+
+
+const bytechain = new BlockChain();
 const wallet = new Wallet();
 
-// const privateKey = keyPair.getPrivate('hex');
-// const keyPair = ec.keyFromPrivate(privateKey);
+app.use(express.json());
 
-// const publicKey = keyPair.getPublic('hex');
+app.get('/create-new-wallet', (req, res) => {
+    const privateKey = wallet.privateKey;
+    const publicKey = wallet.publicKey;
+    const blockchainAddress = wallet.blockchainAddress;
 
-// console.log('Private Key: ', privateKey);
-// console.log('Public Key: ', publicKey);
+    res.status(201).json({
+        privateKey, 
+        publicKey, 
+        blockchainAddress, 
+        message: 'Do not share your private key with anyone, but to receive any transaction share your blockchain address' 
+    });
+});
+
+app.post('/check-balance', (req, res) => {
+    const publicKey = req.body;
+    const balance = bytechain.CalculateBalance(publicKey)
+    res.status(200).json({ message: `Your balance is ${balance}`})
+})
+
+app.post('/create-new-transaction', (req, res) => {
+    const { amount, sender, recipient } = req.body;
+    bytechain.AddNewTransaction(amount, sender, recipient);
+
+    res.status(201).json({ message: 'Transaction completed successfully' })
+});
+
+app.post('/create-new-contract', (req, res) => {
+    const { code, sender } = req.body;
+    // bytechain.AddNewTransaction(amount, sender, recipient);
+
+    res.status(201).json({ message: 'Contract added to blockchain successfully' })
+});
 
 
-console.log(wallet);
-// Node.js server to manage keys and transactions
-// const express = require('express');
-// const app = express();
-
-// app.use(express.json());
-
-// app.post('/create-wallet', (req, res) => {
-    
-//     res.json({ privateKey, publicKey });
-// });
-
-// app.post('/sign-transaction', (req, res) => {
-//     const { privateKey, message } = req.body;
-//     const keyPair = ec.keyFromPrivate(privateKey);
-//     const msgHash = ec.hash().update(message).digest('hex');
-//     const signature = keyPair.sign(msgHash, 'hex');
-//     res.json({ signature: signature.toDER('hex') });
-// });
-
-// app.post('/verify-signature', (req, res) => {
-//     const { publicKey, message, signature } = req.body;
-//     const keyPair = ec.keyFromPublic(publicKey, 'hex');
-//     const msgHash = ec.hash().update(message).digest('hex');
-//     const isValid = keyPair.verify(msgHash, signature);
-//     res.json({ isValid });
-// });
-
-// app.listen(3000, () => {
-//     console.log('Server running on port 3000');
-// });
+app.listen(port, () => {
+    console.log('Server running on port 3001');
+});
