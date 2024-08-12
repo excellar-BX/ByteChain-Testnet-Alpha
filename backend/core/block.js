@@ -1,4 +1,4 @@
-const hashFunc = require('../util/util');
+const { hashFunc } = require('../util/util');
 const Transaction = require('./transaction');
 
 // Block class
