@@ -15,7 +15,7 @@ class Block {
         this.blockHash = '';
     }
 
-    //Method to hash a block
+    //Method to hash a block 
     HashBlock() {
         const blockDataAsString = `${this.blockHeight}${this.nonce}${JSON.stringify(this.transactions)}${this.merkleroot}${this.prevBlockHash}`;
         this.blockHash = hashFunc(blockDataAsString);
@@ -33,7 +33,7 @@ class Block {
             this.nonce++;
         };
         return this.nonce;
-    }
+    } 
 
     CalculateMerkleRoot() {
         if (this.transactions.length === 0) {

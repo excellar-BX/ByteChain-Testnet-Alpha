@@ -10,7 +10,7 @@ class Node {
         this.port = port;
         this.balance = 0;
         this.peers = [];
-    }
+    } 
 
     //Starting the WebSocket server
     StartServer() {

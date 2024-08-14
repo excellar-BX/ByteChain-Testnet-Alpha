@@ -12,7 +12,7 @@ class VirtualMachine {
 
         try {
             const context = {
-                state: this.state,
+                state: this.state, 
                 blockchain: this.blockchain,
                 fromAddress: transaction.fromAddress,
                 toAddress: transaction.toAddress,

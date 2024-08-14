@@ -26,7 +26,7 @@ setInterval(() => {
         console.log('Balance:', bytechain.CalculateBalance(minerBlockChainAddress));
     } catch (error) {
         console.error('Error during mining or balance calculation:', error);
-    }
+    } 
 }, miningTimer);
 
 app.listen(port, () => {

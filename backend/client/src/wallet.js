@@ -42,9 +42,6 @@ class Wallet {
     }
 }
 
-const wallet = new Wallet();
-
-console.log(wallet.CreateBlockChainAddress());
 
 
 module.exports = Wallet;

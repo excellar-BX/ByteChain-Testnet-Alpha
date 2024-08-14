@@ -34,7 +34,7 @@ function buildMerkleTree(transactions) {
 
     if (transactions.length === 1) {
         return hashFunc(transactions[0]);
-    }
+    } 
 
     let hashes = transactions.map(transaction => hashFunc(JSON.stringify(transaction)));
 

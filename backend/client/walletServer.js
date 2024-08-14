@@ -40,7 +40,7 @@ app.post('/check-balance', (req, res) => {
 
     const balance = bytechain.CalculateBalance(publicKey)
     res.status(200).json({ message: `Your balance is ${balance}`})
-})
+});
 
 app.post('/create-transaction', (req, res) => {
     const { amount, sender, recipient, privateKey } = req.body;

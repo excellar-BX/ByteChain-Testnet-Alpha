@@ -62,7 +62,7 @@ class BlockChain {
         newBlock.ProofOfWork();
         this.transactionPool = []
         this.chain.push(newBlock);
-        return newBlock;
+        return newBlock; 
     }
 
     //Calling AddNewBlock() so that we can add a new block to the chain
