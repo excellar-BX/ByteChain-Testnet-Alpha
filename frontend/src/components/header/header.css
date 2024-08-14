@@ -1,0 +1,94 @@
+.headercontainer {
+  width: 100vw;
+  height: 20vh;
+  background: linear-gradient(
+    to right,
+    var(--basecolor),
+    var(--primarycolor),
+    var(--secondarycolor)
+  );
+  padding: 0 4rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.headercontainer .searchcont {
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+  justify-content: center;
+  gap: 0.5rem;
+}
+.headercontainer .searchcont h1 {
+  color: var(--primarycolor);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.headercontainer .searchcont .searchbox {
+  height: 4rem;
+  width: 43vw;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 7px solid #dcdcdc5f;
+  background: var(--basecolor);
+  gap: 0.5rem;
+  padding: 0 0.4rem;
+}
+.headercontainer .searchcont .searchbox select {
+  background: var(--basecolor);
+  color: var(--altbase);
+  height: 70%;
+  border: none;
+  outline: none;
+  outline: none;
+  border-radius: 15px;
+}
+.headercontainer .searchcont .searchbox input::placeholder {
+  color: var(--altbase);
+}
+.headercontainer .searchcont .searchbox input {
+  background: var(--basecolor);
+  color: var(--altbase);
+  height: 70%;
+  width: 30vw;
+  border: none;
+  outline: none;
+  border-radius: 15px;
+  font-size: 1rem;
+  padding: 0 1rem;
+}
+.headercontainer .searchcont .searchbox button {
+  height: 70%;
+  border: none;
+  outline: none;
+  border-radius: 12px;
+  width: 2.5rem;
+  height: 2.5rem;
+  color: var(--altbase);
+  background: var(--primarycolor);
+}
+.headercontainer .balance {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  color: var(--thickbase);
+}
+.headercontainer .balance h3 {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 3rem;
+  font-weight: bold;
+}
+.headercontainer .balance div {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  gap: 0.5rem;
+}
