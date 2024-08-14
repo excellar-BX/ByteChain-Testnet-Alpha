@@ -1,6 +1,10 @@
+const Wallet = require('../client/src/wallet')
 const { hashFunc } = require('../util/util')
 const elliptic = require('elliptic').ec;
 const ec = new elliptic('secp256k1');
+const bs58 = require('bs58').default
+
+const wallet = new Wallet()
 
 // Transaction class
 class Transaction {
@@ -8,16 +12,23 @@ class Transaction {
         this.amount = amount;
         this.sender = sender;
         this.recipient = recipient;
-        this.signature = null;
     }
 
     HashTransaction() {
         const transactionDataAsString = `${this.amount}${this.sender}${this.recipient}`
-        return hashFunc(transactionDataAsString);
+        console.log('Transaction Data:', transactionDataAsString);
+
+        const hashedTransaction = hashFunc(transactionDataAsString)
+        console.log('Hashed Transaction:', hashedTransaction);
+
+        return hashedTransaction;
     }
 
     SignTransaction(signingKey) {
-        if (signingKey.getPublic('hex') !== this.sender) {
+        const publicKey = signingKey.getPublic('hex');
+        const generatedAddress = wallet.CreateBlockChainAddress()
+
+        if (generatedAddress !== this.sender) {
             throw new Error('You cannot sign transaction for another wallet.');
         }
     
@@ -33,7 +44,7 @@ class Transaction {
         const BlockChainAddress = '0000000000000000000000000000000000000000000000000000000BYTECHAIN';
         if (this.sender === BlockChainAddress) return true;
 
-        if (!this.signature || this.signature === 0) {
+        if (!this.signature) {
             throw new Error('This transaction does not contain a signature')
         }
         
@@ -41,6 +52,7 @@ class Transaction {
         return publicKey.verify(this.HashTransaction(), this.signature);
     }
 }
+
 
 
 module.exports = Transaction;

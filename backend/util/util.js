@@ -1,46 +1,56 @@
 const crypto = require('crypto');
 
 
-// A function for giving a block it's own unique crytographic hash
+/**
+ * Computes a double SHA-256 hash of the input data.
+ * @param {string} data - The data to be hashed.
+ * @returns {string} - The hexadecimal representation of the hashed data.
+ */
 function hashFunc(data) {
+    if (typeof data !== 'string') {
+        throw new TypeError('Data must be a string.');
+    }
+
     const hashedData = crypto.createHash('sha256').update(
         crypto.createHash('sha256').update(data).digest('hex')
     ).digest('hex');
     return hashedData;
 }
 
-function Base58() {
-    const Base58Alphabets = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
 
-    // Function to convert a given binary number to Base58
-    function encode(binary) {
-        let encoded = '';
-        let i = binary.length - 1;
-        let carry = parseInt(binary[i], 2);
-
-        while (carry > 0 || i >= 0) {
-            carry = Math.floor(carry / 58);
-            encoded = Base58Alphabets[carry % 58] + encoded;
-            i--;
-        }
-        return encoded;
+/**
+ * Builds a Merkle tree from an array of transactions.
+ * @param {Array} transactions - An array of transaction objects.
+ * @returns {string} - The Merkle root hash.
+ */
+function buildMerkleTree(transactions) {
+    if (!Array.isArray(transactions)) {
+        throw new TypeError('Transactions must be an array.');
     }
 
-    // Function to convert a given Base58 encoded string to binary
-    function decode(base58) {
-        let decoded = '';
-        let i = base58.length - 1;
-        let carry = parseInt(base58[i], 58);
-        while (carry > 0 || i >= 0) {
-            carry = Math.floor(carry / 256);
-            decoded = carry.toString(2) + decoded;
-            i--;
-        }
-        return decoded;
+    if (transactions.length === 0) {
+        return '';
     }
 
-    return {encode, decode};    
+    if (transactions.length === 1) {
+        return hashFunc(transactions[0]);
+    }
+
+    let hashes = transactions.map(transaction => hashFunc(JSON.stringify(transaction)));
+
+    while (hashes.length > 1) {
+        if (hashes.length % 2 !== 0) {
+            hashes.push(hashes[hashes.length - 1]);
+        }
+
+        let nextLevel = [];
+        for (let i = 0; i < hashes.length; i += 2) {
+            nextLevel.push(hashFunc(hashes[i] + hashes[i + 1]));
+        }
+        hashes = nextLevel;
+    }
+    return hashes[0];
 }
 
 
-module.exports = {hashFunc, Base58};
+module.exports = { hashFunc, buildMerkleTree };

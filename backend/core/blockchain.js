@@ -40,11 +40,15 @@ class BlockChain {
     }
 
     //Creating and Adding a new transaction to the transaction pool
-    AddNewTransaction(amount, sender, recipient) {
-        const transaction = new Transaction(amount, sender, recipient);
+    AddNewTransaction(transaction) {
+        if (!(transaction instanceof Transaction)) {
+            throw new TypeError('Invalid transaction');
+        }
+
         if (!transaction.IsValidTransaction()) {
             throw new Error('Invalid transaction');
         }
+
         this.transactionPool.push(transaction);
         return transaction;
     }
@@ -63,7 +67,8 @@ class BlockChain {
 
     //Calling AddNewBlock() so that we can add a new block to the chain
     Mine() {
-        this.AddNewTransaction(MiningReward, BlockChainAddress, this.minerBlockChainAddress);
+        const MiningRewardTransaction = new Transaction(MiningReward, BlockChainAddress, this.minerBlockChainAddress);
+        this.AddNewTransaction(MiningRewardTransaction)
         this.AddNewBlock();
         return true;
     }

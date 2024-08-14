@@ -1,9 +1,7 @@
 const crypto = require('crypto');
-// const Base58 = require('bs58');
+const bs58 = require('bs58').default;
 const elliptic = require('elliptic').ec;
 const ec = new elliptic('secp256k1');
-const { Base58 } = require('../../util/util.js');
-const base58 = Base58();
 
 const keyPair = ec.genKeyPair();
 
@@ -34,15 +32,19 @@ class Wallet {
         const publicKeyBuffer = Buffer.from(this.publicKey, 'hex');
         const sha256Hash = crypto.createHash('sha256').update(publicKeyBuffer).digest();
         const ripemd160Hash = crypto.createHash('ripemd160').update(sha256Hash).digest();
-        const versionByte = Buffer.from([0x01]);  // Testnet version byte: 0x05 for Bitcoin Testnet
-        const payload = Buffer.concat([versionByte, Buffer.from(ripemd160Hash, 'hex')]);
-        const checksum = hashFunc(payload).slice(0, 4);
-        const finalPayload = Buffer.concat([payload, Buffer.from(checksum, 'hex')]);
-        const blockchainAddress = base58.encode(finalPayload.toString('hex'));
-
+        const versionByte = Buffer.from([0x00]);
+        const payload = Buffer.concat([versionByte, ripemd160Hash]);
+        const checksum = Buffer.from(hashFunc(payload)).slice(0, 4);
+        const finalPayload = Buffer.concat([payload, checksum]);
+        const blockchainAddress = bs58.encode(finalPayload);
+        
         return blockchainAddress;
     }
 }
+
+const wallet = new Wallet();
+
+console.log(wallet.CreateBlockChainAddress());
 
 
 module.exports = Wallet;
