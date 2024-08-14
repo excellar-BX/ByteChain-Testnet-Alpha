@@ -3,15 +3,14 @@ const Block = require('./block');
 const Transaction = require('./transaction');
 
 //The blockchain_address of the blockchain and the mining reward for miner
-const BlockChainAddress = '0000000000000000000000000000000000000000000000000000000BYTECHAIN';
+const BlockChainAddress = '0'.repeat(25) + 'BYTECHAIN';
 const MiningReward = 2000;
 
-const GenesisTransactionAmount = 0;
-const GenesisTransactionSender = 'GenesisSender';
-const GenesisTransactionRecipient = 'GenesisRecipient'; 
+const GenesisTransactionAmount = 1000000;
+const GenesisTransactionRecipient = '1J8uVRSxixFcRFUjKPJNRkNhTev5dpsHXi'; 
 const GenesisBlockPrevHash = '0'.repeat(64)
 
-const minerBlockChainAddress = '040f144abd3b329eb42d17724517ca39fb4772238a5533354c7f626b654becad6c74a6ec0bb96796232c91fdb2fb5ed163b91772363608875fa86da8718140f01c'
+const minerBlockChainAddress = '13uqkcZgHKztNwptfxEBvGdf25684eszCB'
 
 //BlockChain class
 class BlockChain {
@@ -26,10 +25,10 @@ class BlockChain {
     GenesisBlock() {
         const genesisTransaction = new Transaction(
             GenesisTransactionAmount,
-            GenesisTransactionSender,
+            BlockChainAddress,
             GenesisTransactionRecipient
         );
-        const genesisBlock = new Block(0, [genesisTransaction], GenesisBlockPrevHash);
+        const genesisBlock = new Block(1, [genesisTransaction], GenesisBlockPrevHash);
         genesisBlock.ProofOfWork();
         this.chain.push(genesisBlock);
     }
@@ -116,7 +115,6 @@ class BlockChain {
         return true;
     }
 }
-
 
 
 module.exports = BlockChain;
