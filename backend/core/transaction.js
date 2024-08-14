@@ -1,4 +1,4 @@
-const Wallet = require('../client/src/wallet')
+const Wallet = require('../client/wallet')
 const { hashFunc } = require('../util/util')
 const elliptic = require('elliptic').ec;
 const ec = new elliptic('secp256k1');

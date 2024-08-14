@@ -1,6 +1,6 @@
 const BlockChain = require('../core/blockchain');
 const Transaction = require('../core/transaction');
-const Wallet = require('./src/wallet');
+const Wallet = require('../client/wallet');
 const express = require('express');
 const app = express();
 const port = process.env.PORT || 3001;

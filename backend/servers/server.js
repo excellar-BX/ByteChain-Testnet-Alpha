@@ -1,4 +1,4 @@
-const BlockChain = require('./core/blockchain');
+const BlockChain = require('../core/blockchain');
 const express = require('express');
 const app = express();
 const port = process.env.PORT || 3000;
