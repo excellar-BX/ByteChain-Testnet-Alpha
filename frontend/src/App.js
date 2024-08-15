@@ -6,20 +6,18 @@ import Navbar from "./components/navbar";
 import Header from "./components/header";
 
 function App() {
-  let [isLightmode, setisLightmode] = useState(true);
+  let [mode, setmode] = useState(<MdLightMode />);
 
   const toggleDarkMode = () => {
     const currentTheme = document.documentElement.getAttribute("data-theme");
-    const newTheme = currentTheme === "dark" ? "light" : "dark";
-    setisLightmode(newTheme === "light");
+    const newTheme = currentTheme === "light" ? "dark" : "light";
+    setmode(currentTheme === "light" ? <MdDarkMode /> : <MdLightMode />);
     document.documentElement.setAttribute("data-theme", newTheme);
   };
 
-  let modeIcon = isLightmode ? <MdLightMode /> : <MdDarkMode />;
-
   return (
     <div className="App">
-      <Navbar onclick={toggleDarkMode} modeIcon={modeIcon} />
+      <Navbar onclick={toggleDarkMode} modeIcon={mode} />
       <Header />
     </div>
   );
