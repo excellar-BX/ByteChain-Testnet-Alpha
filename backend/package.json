@@ -4,7 +4,7 @@
   "description": "ByteChain-Testnet-Alpha",
   "main": "server.js",
   "scripts": {
-    "start-blockchain": "node ./servers/server",
+    "start-blockchain": "node ./servers/blockchainServer",
     "start-wallet": "node ./servers/walletServer"
   },
   "author": "ByteChain Labs",

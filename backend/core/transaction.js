@@ -2,7 +2,6 @@ const Wallet = require('../client/wallet')
 const { hashFunc } = require('../util/util')
 const elliptic = require('elliptic').ec;
 const ec = new elliptic('secp256k1');
-const bs58 = require('bs58').default
 
 const wallet = new Wallet()
 
@@ -41,7 +40,7 @@ class Transaction {
 
     //Validating a transaction if it has been signed by the owner of a particular private/public key
     IsValidTransaction() {
-        const BlockChainAddress = '0000000000000000000000000000000000000000000000000000000BYTECHAIN';
+        const BlockChainAddress = '0'.repeat(25) + 'BYTECHAIN';
         if (this.sender === BlockChainAddress) return true;
 
         if (!this.signature) {

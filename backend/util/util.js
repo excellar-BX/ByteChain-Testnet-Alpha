@@ -22,7 +22,7 @@ function hashFunc(data) {
  * Builds a Merkle tree from an array of transactions.
  * @param {Array} transactions - An array of transaction objects.
  * @returns {string} - The Merkle root hash.
- */
+ */ 
 function buildMerkleTree(transactions) {
     if (!Array.isArray(transactions)) {
         throw new TypeError('Transactions must be an array.');
@@ -30,10 +30,10 @@ function buildMerkleTree(transactions) {
 
     if (transactions.length === 0) {
         return '';
-    }
+    } 
 
     if (transactions.length === 1) {
-        return hashFunc(transactions[0]);
+        return hashFunc(JSON.stringify(transactions[0]));
     } 
 
     let hashes = transactions.map(transaction => hashFunc(JSON.stringify(transaction)));
