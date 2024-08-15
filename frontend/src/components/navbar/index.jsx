@@ -14,7 +14,7 @@ const Navbar = ({ onclick, modeIcon }) => {
           <ul>
             <li>Home</li>
             <li>BlockChain</li>
-            <li>Leaderboard</li>
+            <li>Wallet</li>
             <li>NFTs</li>
             <li>Resources</li>
             <li onClick={onclick}>{modeIcon}</li>

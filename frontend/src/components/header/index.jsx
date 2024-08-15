@@ -1,27 +1,27 @@
 import React from "react";
 import "./header.css";
 import { MdSearch } from "react-icons/md";
-import { CiWallet } from "react-icons/ci";
+// import { CiWallet } from "react-icons/ci";
 
 const Header = () => {
-  const handleWallet = (e) => {
-    if (e.target.value === "addwallet") {
-      const newWallet = document.createElement("option");
-      newWallet.textContent = prompt("Enter a name for your new wallet: ");
-      newWallet.value = newWallet.textContent;
-      if (newWallet.textContent.trim().length !== 0) {
-        e.target.appendChild(newWallet);
-        const addWalletOption = Array.from(e.target.options).find(
-          (option) => option.value === "addwallet"
-        );
-        e.target.appendChild(addWalletOption);
-        e.target.value = newWallet.value;
-      } else {
-        e.target.value = e.target.options[0].value;
-        alert("Invalid Wallet Name");
-      }
-    }
-  };
+  // const handleWallet = (e) => {
+  //   if (e.target.value === "addwallet") {
+  //     const newWallet = document.createElement("option");
+  //     newWallet.textContent = prompt("Enter a name for your new wallet: ");
+  //     newWallet.value = newWallet.textContent;
+  //     if (newWallet.textContent.trim().length !== 0) {
+  //       e.target.appendChild(newWallet);
+  //       const addWalletOption = Array.from(e.target.options).find(
+  //         (option) => option.value === "addwallet"
+  //       );
+  //       e.target.appendChild(addWalletOption);
+  //       e.target.value = newWallet.value;
+  //     } else {
+  //       e.target.value = e.target.options[0].value;
+  //       alert("Invalid Wallet Name");
+  //     }
+  //   }
+  // };
   return (
     <div>
       <div className="headercontainer">
@@ -46,7 +46,7 @@ const Header = () => {
             </button>
           </div>
         </div>
-        <div className="balance">
+        {/* <div className="balance">
           <span>
             <CiWallet />
             <select name="wallet" id="wallet" onChange={handleWallet}>
@@ -58,7 +58,7 @@ const Header = () => {
             <p>BALANCE: </p>
             <h2>$0.00</h2>
           </div>
-        </div>
+        </div> */}
       </div>
     </div>
   );
