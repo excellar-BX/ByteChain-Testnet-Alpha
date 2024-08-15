@@ -5,11 +5,12 @@ const MiningDifficulty = 3;
 
 // Block class
 class Block {
-    constructor (blockHeight, transactions, prevBlockHash) {
+    constructor (blockHeight, transactions, trxCount, prevBlockHash) {
         this.nonce = 0;
         this.blockHeight = blockHeight;
         this.timestamp = Date.now();
         this.transactions = transactions;
+        this.trxCount = trxCount;
         this.merkleroot = '';
         this.prevBlockHash = prevBlockHash;
         this.blockHash = '';

@@ -39,12 +39,12 @@ class BlockChain {
     }
 
     //Creating and Adding a new transaction to the transaction pool
-    AddNewTransaction(transaction) {
+    AddNewTransaction(transaction, pubKey) {
         if (!(transaction instanceof Transaction)) {
             throw new TypeError('Invalid transaction');
         }
 
-        if (!transaction.IsValidTransaction()) {
+        if (!transaction.IsValidTransaction(pubKey)) {
             throw new Error('Invalid transaction');
         }
 
@@ -56,11 +56,14 @@ class BlockChain {
     AddNewBlock() {
         const blockHeight = this.chain.length + 1;
         const transactions = this.transactionPool;
+        const trxCount = transactions.length;
         const prevBlockHash = this.GetLastBlock().blockHash;
-        const newBlock = new Block(blockHeight, transactions, prevBlockHash);
+        const newBlock = new Block(blockHeight, transactions, trxCount, prevBlockHash);
         newBlock.ProofOfWork();
+
         this.transactionPool = []
         this.chain.push(newBlock);
+
         return newBlock; 
     }
 
@@ -91,6 +94,25 @@ class BlockChain {
         });
         return balance.toFixed(8);
     }
+
+    //                                        TODO
+    // AllTransactionsMade(blockChainAddress) {
+    //     const trxs = []
+    //     const chain = this.chain;
+    //     chain.forEach(block => {
+    //         const transactions =  block.transactions;
+    //         transactions.forEach(transaction => {
+    //             const sender = transaction.sender;
+    //             const recipient = transaction.recipient;
+    //             if (blockChainAddress === sender || blockChainAddress === recipient) {
+    //                 trxs.push(transaction)
+    //             } else {
+    //                 return false;
+    //             }                
+    //         }); 
+    //     });
+    //     return trxs;
+    // }
 
     IsChainValid() {
         for (let i = 1; i < this.chain.length; i++) {

@@ -3,8 +3,6 @@ const bs58 = require('bs58').default;
 const elliptic = require('elliptic').ec;
 const ec = new elliptic('secp256k1');
 
-const keyPair = ec.genKeyPair();
-
 function hashFunc(data) {
     const hashedData = crypto.createHash('sha256').update(
         crypto.createHash('sha256').update(data).digest()
@@ -13,23 +11,19 @@ function hashFunc(data) {
 }
 class Wallet {
     constructor() {
-        this.privateKey = this.CreatePrivateKey();
-        this.publicKey = this.CreatePublicKey();
-        this.blockchainAddress = this.CreateBlockChainAddress();
+        this.privateKey = ec.genKeyPair().getPrivate('hex');
+        this.publicKey = this.CreatePublicKey(this.privateKey);
+        this.blockchainAddress = this.CreateBlockChainAddress(this.publicKey);
     }
 
-    CreatePrivateKey() {
-        const privateKey = keyPair.getPrivate('hex');
-        return privateKey;
-    }
-
-    CreatePublicKey() {
+    CreatePublicKey(privateKey) {
+        const keyPair = ec.keyFromPrivate(privateKey)
         const publicKey = keyPair.getPublic('hex');
         return publicKey;
     }
 
-    CreateBlockChainAddress() {
-        const publicKeyBuffer = Buffer.from(this.publicKey, 'hex');
+    CreateBlockChainAddress(publicKey) {
+        const publicKeyBuffer = Buffer.from(publicKey, 'hex');
         const sha256Hash = crypto.createHash('sha256').update(publicKeyBuffer).digest();
         const ripemd160Hash = crypto.createHash('ripemd160').update(sha256Hash).digest();
         const versionByte = Buffer.from([0x00]);
@@ -41,7 +35,6 @@ class Wallet {
         return blockchainAddress;
     }
 }
-
 
 
 module.exports = Wallet;

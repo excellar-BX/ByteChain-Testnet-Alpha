@@ -11,6 +11,7 @@ const bytechain = new BlockChain();
 const wallet = new Wallet();
 
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 app.get('/create-new-wallet', (req, res) => {
     const privateKey = wallet.privateKey;
@@ -18,10 +19,10 @@ app.get('/create-new-wallet', (req, res) => {
     const blockchainAddress = wallet.blockchainAddress;
 
     res.status(201).json({
+        message: 'Do not share your private key with anyone, but to receive any transaction share your blockchain address',
         privateKey, 
         publicKey, 
-        blockchainAddress, 
-        message: 'Do not share your private key with anyone, but to receive any transaction share your blockchain address' 
+        blockchainAddress
     });
 });
 
@@ -43,9 +44,9 @@ app.post('/check-balance', (req, res) => {
 });
 
 app.post('/create-transaction', (req, res) => {
-    const { amount, sender, recipient, privateKey } = req.body;
+    const { amount, sender, recipient, privateKey, publicKey } = req.body;
 
-    if (!amount || !sender || !recipient || !privateKey) {
+    if (!amount || !sender || !recipient || !privateKey || !publicKey) {
         res.status(400).json({
             message: 'Please provide all required fields'
         })
@@ -54,7 +55,8 @@ app.post('/create-transaction', (req, res) => {
     try {
         const transaction = new Transaction(amount, sender, recipient);
         transaction.SignTransaction(privateKey);
-        bytechain.AddNewTransaction(transaction);
+        bytechain.AddNewTransaction(transaction, publicKey);
+        console.log(bytechain.transactionPool);
 
         res.status(201).json({ message: 'Transaction completed successfully' });
     } catch (error) {
@@ -62,11 +64,12 @@ app.post('/create-transaction', (req, res) => {
     }
 });
 
-app.post('/create-new-contract', (req, res) => {
-    //creating new contract logic
-    //<TODO></TODO>
-    res.status(201).json({ message: 'Contract added to blockchain successfully' })
-});
+//                                           TODO
+// app.post('/create-new-contract', (req, res) => {
+//     //creating new contract logic
+//     //<TODO></TODO>
+//     res.status(201).json({ message: 'Contract added to blockchain successfully' })
+// });
 
 
 app.listen(port, () => {
