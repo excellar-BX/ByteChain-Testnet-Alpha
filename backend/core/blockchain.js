@@ -2,22 +2,19 @@
 const Block = require('./block');
 const Transaction = require('./transaction');
 
-//The blockchain_address of the blockchain and the mining reward for miner
-const BlockChainAddress = '0'.repeat(25) + 'BYTECHAIN';
-const MiningReward = 2000;
 
-const GenesisTransactionAmount = 1000000;
-const GenesisTransactionRecipient = '1J8uVRSxixFcRFUjKPJNRkNhTev5dpsHXi'; 
+const GenesisTransactionAmount = 0;
+const GenesisTransactionRecipient = 'The-ByteChain-BlockChain'; 
 const GenesisBlockPrevHash = '0'.repeat(64)
 
-const minerBlockChainAddress = '13uqkcZgHKztNwptfxEBvGdf25684eszCB'
 
 //BlockChain class
 class BlockChain {
     constructor () {
         this.chain = [];
         this.transactionPool = [];
-        this.minerBlockChainAddress = minerBlockChainAddress
+        this.blockChainAddress = '0'.repeat(25) + 'BYTECHAIN';
+        this.minerAddress = minerAddress
         this.GenesisBlock();
     }
 
@@ -65,14 +62,6 @@ class BlockChain {
         this.chain.push(newBlock);
 
         return newBlock; 
-    }
-
-    //Calling AddNewBlock() so that we can add a new block to the chain
-    Mine() {
-        const MiningRewardTransaction = new Transaction(MiningReward, BlockChainAddress, this.minerBlockChainAddress);
-        this.AddNewTransaction(MiningRewardTransaction)
-        this.AddNewBlock();
-        return true;
     }
 
     //Calculating a user's balance and returning it;

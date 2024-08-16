@@ -1,72 +1,123 @@
-const BlockChain = require('./blockchain');
-const WebSocket = require('ws');
+const bootstrapNodes = ['http://bootstrap-node1:3000', 'http://bootstrap-node2:3000'];
 
-const bytechain = new BlockChain()
+const Blockchain = require('./blockchain');
+const Wallet = require('../client/wallet')
+const Transaction = require('./transaction')
 
-//.Creating a node class
+const axios = require('axios');
+
+const bytechain = new Blockchain();
+const wallet = new Wallet();
+
+const MiningReward = 1024;
+
 class Node {
-    constructor(id, port) {
-        this.id = id;
-        this.port = port;
-        this.balance = 0;
-        this.peers = [];
-    } 
+    constructor() {
+        this.blockchain = bytechain;
+        this.port = wallet.blockchainAddress; 
+        this.peers = []; 
+        this.isMiner = false;
+        this.blockchainAddress = wallet.blockchainAddress
+    }
 
-    //Starting the WebSocket server
-    StartServer() {
-        const server = new WebSocket.Server({ port: this.port });
-        server.on('connection', ws => {
-            this.AddPeer(ws);
-            console.log(`Node ${this.id} is running on port ${this.port}`);
+    ConnectToBootstrapNodes() {
+        bootstrapNodes.forEach(nodeUrl => {
+            axios.get(`${nodeUrl}/peers`).then(response => {
+                this.peers.push(...response.data.peers);
+            }).catch(error => {
+                console.error(`Error connecting to bootstrap node ${nodeUrl}:`, error.message);
+            });
         });
-
-        
     }
 
-    //Method for connecting a node to a peer
-    ConnectToPeer(peerAddress) {
-        const ws = new WebSocket(peerAddress);
-        ws.on('open', () => this.AddPeer(ws));
-    }
+    async StartMining() {
+        while (true) {
+            if (this.isMiner) {
+                const MiningRewardTransaction = new Transaction(MiningReward, BlockChainAddress, this.blockchainAddress);
+                this.AddNewTransaction(MiningRewardTransaction)
+                const newBlock = this.blockchain.AddNewBlock();
+                this.BroadCastBlock(newBlock);
+                await this.SyncWithPeers();
 
-    //Method for adding a node to a peer
-    AddPeer() {
-        this.peers.push(ws);
-        console.log(`Node ${this.id} is connected to a peer`);
-        ws.on('message', message => this.HandleMessage(message));
-    }
-
-    //Method for handling broadcasted messages about a new blocks from other nodes
-    HandleMessage(message) {
-        const parsedMessage = JSON.parse(message);
-        if(parsedMessage.type === 'block') {
-            this.HandleIncomingBlock(parsedMessage.b)
+            } else {
+                this.SelectMiner();
+            }
+            await this.WaitForNextBlock();
         }
     }
 
-    //Method for handling broadcasted blocks from other nodes
-    HandleIncomingBlock(message) {
-        const parsedMessage = JSON.parse(message);
-        if(parsedMessage.type === 'block') {
-            this.HandleIncomingBlock(parsedMessage.b)
+    async WaitForNextBlock() {
+        await new Promise(resolve => setTimeout(resolve, this.blockchain.blockTime));
+    }
+
+    BroadCastTransaction(transaction) {
+        transaction = this.blockchain.transactionPool
+        this.peers.forEach(peerUrl => {
+            axios.post(`${peerUrl}/transactions`, transaction).catch(error => {
+                console.error(`Error broadcasting transaction to ${peerUrl}:`, error.message);
+            });
+        });
+    }
+
+    BroadCastBlock(block) {
+        this.peers.forEach(peerUrl => {
+            axios.post(`${peerUrl}/blocks`, block).catch(error => {
+                console.error(`Error broadcasting block to ${peerUrl}:`, error.message);
+            });
+        });
+    }
+
+    async SyncWithPeers() {
+        this.peers.forEach(async peerUrl => {
+            try {
+                const response = await axios.get(`${peerUrl}/blocks`);
+                const otherBlocks = response.data;
+                this.blockchain.syncBlocks(otherBlocks);
+            } catch (error) {
+                console.error(`Error syncing with peer ${peerUrl}:`, error.message);
+            }
+        });
+    }
+
+    SelectMiner() {
+        const minerPool = [...this.peers, `http://localhost:${this.port}`];
+
+        const selectedMinerUrl = minerPool[Math.floor(Math.random() * minerPool.length)];
+
+        if (selectedMinerUrl === `http://localhost:${this.port}`) {
+            this.isMiner = true; 
+        } else {
+            this.isMiner = false; 
+        }
+
+        // Announce the selected miner to the network
+        this.AnnounceMiner(selectedMinerUrl);
+    }
+
+    AnnounceMiner(minerUrl) {
+        this.peers.forEach(peerUrl => {
+            axios.post(`${peerUrl}/announce-miner`, { minerUrl }).catch(error => {
+                console.error(`Error announcing miner to ${peerUrl}:`, error.message);
+            });
+        });
+    }
+
+    AddPeer(peerUrl) {
+        if (!this.peers.includes(peerUrl)) {
+            this.peers.push(peerUrl);
         }
     }
 
-    //Method for broadcasted blocks to other nodes
-    SendMessage(message) {
-        const parsedMessage = JSON.parse(message);
-        if(parsedMessage.type === 'block') {
-            this.handleIncomingBlock(parsedMessage.b)
-        }
-    }
-
-    //Method for broadcasting blocks to other nodes
-    HandleOutgoingBlock(message) {
-        const parsedMessage = JSON.parse(message);
-        if(parsedMessage.type === 'block') {
-            this.HandleIncomingBlock(parsedMessage.b)
-        }
+    AnnounceToNetwork() {
+        this.peers.forEach(peerUrl => {
+            axios.post(`${peerUrl}/announce`, { peerUrl: `http://localhost:${this.port}` }).catch(error => {
+                console.error(`Error announcing to ${peerUrl}:`, error.message);
+            });
+        });
     }
 }
+
+console.log('This is your wallet information: ', wallet);
+
 
 module.exports = Node;
