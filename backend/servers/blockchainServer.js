@@ -1,43 +1,49 @@
-const BlockChain = require('../core/blockchain');
+const Node = require('../core/node');
+
 const express = require('express');
 const app = express();
-//const cors = require('cors'); TODO
 
 const port = process.env.PORT || 3000;
 
-const bytechain = new BlockChain();
-const miningTimer = 10000;
+const node = new Node();
 
-// app.use(cors()); TODO
+// const miningTimer = 10000;
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.get('/blockchain', (req, res) => {
-    res.status(200).send(bytechain.chain);
+    res.status(200).send(node.blockchain.chain);
 });
 
-app.get('/blockchain/transactions', (req, res) => {
-    res.status(200).send(bytechain.transactionPool);
+app.get('/transactions', (req, res) => {
+    res.status(200).send(node.blockchain.transactionPool);
 });
 
-//                                             TODO
-// app.get('/blockchain/blockchain_address', (req, res) => {
-    
-//     res.status(200).send({
-//         blockChainAddress: blockChainAddress,
-//         balance: bytechain.CalculateBalance(blockChainAddress),
-//         allTransactions: bytechain.AllTransactionsMade(blockChainAddress)
-//     });
-// });
+app.post('/add-new-transaction', (req, res) => {
+    const { transaction, publicKey } = req.body;
 
-setInterval(() => {
-    try {
-        bytechain.Mine();
-        console.log('Blockchain:', bytechain.chain);
-    } catch (error) {
-        console.error('Error during Mining:', error);
-    } 
-}, miningTimer);
+    if (!transaction || !publicKey) {
+        res.status(400).json({
+            message: 'Please provide all required fields'
+        });
+    }
+
+    node.AddNewTransaction(transaction, publicKey)
+});
+
+app.post('/smart-contract', (req, res) => {
+    const { code } = req.body;
+    res.status(200).json({
+        result: node.ExecuteSmartContract(code)
+    })
+    // TODO: Implement smart contract execution
+})
+
+app.get('/mine', (req, res) => {
+    node.Mine()
+    res.status(200).json({ message: 'Block mined successfully' })
+})
 
 app.listen(port, () => {
     console.log(`Server listening on port ${port}`)

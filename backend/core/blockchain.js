@@ -3,10 +3,6 @@ const Block = require('./block');
 const Transaction = require('./transaction');
 
 
-const GenesisTransactionAmount = 0;
-const GenesisTransactionRecipient = 'The-ByteChain-BlockChain'; 
-const GenesisBlockPrevHash = '0'.repeat(64)
-
 
 //BlockChain class
 class BlockChain {
@@ -14,18 +10,25 @@ class BlockChain {
         this.chain = [];
         this.transactionPool = [];
         this.blockChainAddress = '0'.repeat(25) + 'BYTECHAIN';
-        this.minerAddress = minerAddress
         this.GenesisBlock();
     }
 
     //Creating genesis block
-    GenesisBlock() {
+    GenesisBlock() { 
+        const GenesisTransactionAmount = 0;
+        const GenesisTransactionRecipient = 'The-ByteChain-BlockChain'; 
+        const GenesisBlockPrevHash = '0'.repeat(64)
+
         const genesisTransaction = new Transaction(
             GenesisTransactionAmount,
-            BlockChainAddress,
+            this.blockChainAddress,
             GenesisTransactionRecipient
         );
-        const genesisBlock = new Block(1, [genesisTransaction], GenesisBlockPrevHash);
+
+        const genesisTransactionArr = [genesisTransaction];
+
+        const genesisBlock = new Block(1, genesisTransactionArr, genesisTransactionArr.length, GenesisBlockPrevHash);
+        
         genesisBlock.ProofOfWork();
         this.chain.push(genesisBlock);
     }
