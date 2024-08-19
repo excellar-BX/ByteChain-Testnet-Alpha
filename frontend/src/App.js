@@ -1,26 +1,29 @@
 import React from "react";
-import { useState } from "react";
-import { MdDarkMode, MdLightMode } from "react-icons/md";
-import "./App.css";
-import Navbar from "./components/navbar";
-import Header from "./components/header";
+import {
+  createBrowserRouter,
+  createRoutesFromElements,
+  Route,
+  RouterProvider,
+} from "react-router-dom";
+
+//Pages
+import Home from "./pages/Home";
+
+//Layouts
+import RootLayout from "./layouts/RootLayout";
+import Wallet from "./pages/Wallet";
+
+const router = createBrowserRouter(
+  createRoutesFromElements(
+    <Route path="/" element={<RootLayout />}>
+      <Route index element={<Home />} />
+      <Route path="wallet" element={<Wallet />} />
+    </Route>
+  )
+);
 
 function App() {
-  let [mode, setmode] = useState(<MdLightMode />);
-
-  const toggleDarkMode = () => {
-    const currentTheme = document.documentElement.getAttribute("data-theme");
-    const newTheme = currentTheme === "light" ? "dark" : "light";
-    setmode(currentTheme === "light" ? <MdDarkMode /> : <MdLightMode />);
-    document.documentElement.setAttribute("data-theme", newTheme);
-  };
-
-  return (
-    <div className="App">
-      <Navbar onclick={toggleDarkMode} modeIcon={mode} />
-      <Header />
-    </div>
-  );
+  return <RouterProvider router={router} />;
 }
 
 export default App;
