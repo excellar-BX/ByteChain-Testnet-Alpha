@@ -2,6 +2,7 @@ const BlockChain = require('../core/blockchain');
 const Transaction = require('../core/transaction');
 const Wallet = require('../client/wallet');
 const express = require('express');
+const { default: axios } = require('axios');
 const app = express();
 const port = process.env.PORT || 3001;
 
@@ -43,7 +44,7 @@ app.post('/check-balance', (req, res) => {
     res.status(200).json({ message: `Your balance is ${balance}`})
 });
 
-app.post('/create-transaction', (req, res) => {
+app.post('/create-transaction', async (req, res) => {
     const { amount, sender, recipient, privateKey, publicKey } = req.body;
 
     if (!amount || !sender || !recipient || !privateKey || !publicKey) {
@@ -52,13 +53,17 @@ app.post('/create-transaction', (req, res) => {
         })
     }
 
+    const transaction = new Transaction(amount, sender, recipient);
+    transaction.SignTransaction(privateKey);
+
+    const trxReq = { transaction, publicKey }
+
     try {
-        const transaction = new Transaction(amount, sender, recipient);
-        transaction.SignTransaction(privateKey);
-        bytechain.AddNewTransaction(transaction, publicKey);
-        console.log(bytechain.transactionPool);
+        const response = await axios.post('http://localhost:3000/add-new-transaction', trxReq)
+        console.log(`Transaction completed sucessfully \n BlockChain server responded with ${response.data}`);
 
         res.status(201).json({ message: 'Transaction completed successfully' });
+
     } catch (error) {
         res.status(500).json({ message: 'Transaction failed', error: error.message });
     }
