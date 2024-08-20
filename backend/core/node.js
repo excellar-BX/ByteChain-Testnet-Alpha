@@ -30,19 +30,13 @@ class Node {
         });
     }
 
-    AddNewTransaction(transaction, pubKey) {
-        if (!transaction.signature) return false;
-        
+    AddNewTransaction(transaction, pubKey) {        
         this.blockchain.AddNewTransaction(transaction, pubKey);
         this.BroadCastTransaction(transaction);
     }
 
     ExecuteSmartContract(code) {
-        // const context = {
-        //     wallet: wallet,
-        //     transaction: transaction,
-        //     executeSmartContract: this.ExecuteSmartContract.bind(this)
-        // };
+        //TODO
     }
 
     Mine() {

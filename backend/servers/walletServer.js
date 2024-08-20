@@ -1,6 +1,7 @@
 const BlockChain = require('../core/blockchain');
 const Transaction = require('../core/transaction');
 const Wallet = require('../client/wallet');
+const wallet = new Wallet();
 const express = require('express');
 const { default: axios } = require('axios');
 const app = express();
@@ -9,18 +10,19 @@ const port = process.env.PORT || 3001;
 
 
 const bytechain = new BlockChain();
-const wallet = new Wallet();
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.get('/create-new-wallet', (req, res) => {
-    const privateKey = wallet.privateKey;
-    const publicKey = wallet.publicKey;
-    const blockchainAddress = wallet.blockchainAddress;
+    const walletUser = new Wallet();
+
+    const privateKey = walletUser.privateKey;
+    const publicKey = walletUser.publicKey;
+    const blockchainAddress = walletUser.blockchainAddress;
 
     res.status(201).json({
-        message: 'Do not share your private key with anyone, but to receive any transaction share your blockchain address',
+        message: 'Do not share your private key with anyone',
         privateKey, 
         publicKey, 
         blockchainAddress
@@ -28,19 +30,15 @@ app.get('/create-new-wallet', (req, res) => {
 });
 
 app.post('/check-balance', (req, res) => {
-    const { publicKey } = req.body;
+    const { blockchainAddress } = req.body;
 
-    if (!publicKey) {
+    if (!blockchainAddress) {
         return res.status(400).json({
-            message: 'Public key is required.'
+            message: 'BlockChainAddress is required.'
         });
     }
 
-    if (publicKey !== wallet.CreateBlockChainAddress()) {
-        res.status(400).json({ message: 'Please provide a valid public key' })
-    }
-
-    const balance = bytechain.CalculateBalance(publicKey)
+    const balance = bytechain.CalculateBalance(blockchainAddress)
     res.status(200).json({ message: `Your balance is ${balance}`})
 });
 
@@ -55,6 +53,7 @@ app.post('/create-transaction', async (req, res) => {
 
     const transaction = new Transaction(amount, sender, recipient);
     transaction.SignTransaction(privateKey);
+
 
     const trxReq = { transaction, publicKey }
 

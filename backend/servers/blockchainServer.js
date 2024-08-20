@@ -24,27 +24,55 @@ app.post('/add-new-transaction', (req, res) => {
     const { transaction, publicKey } = req.body;
 
     if (!transaction || !publicKey) {
-        res.status(400).json({
-            message: 'Please provide all required fields'
-        });
+        return res.status(400).json({ message: 'Incomplete request data' });
     }
 
-    node.AddNewTransaction(transaction, publicKey)
+    const parsedTransaction = JSON.parse(transaction);
+    const parsedPublicKey = JSON.parse(publicKey)
+    
+    if (!parsedTransaction.amount || !parsedTransaction.sender || !parsedTransaction.recipient) {
+        return res.status(400).json({ message: 'Incomplete transaction data' });
+    }
+
+    try {
+        node.AddNewTransaction(parsedTransaction, parsedPublicKey);
+        res.status(201).json({ message: 'Transaction added successfully' });
+    } catch (error) {
+        console.error('Error adding transaction:', error);
+        res.status(500).json({ message: 'Failed to add transaction', error: error.message });
+    }
 });
+
 
 app.post('/smart-contract', (req, res) => {
     const { code } = req.body;
-    res.status(200).json({
-        result: node.ExecuteSmartContract(code)
-    })
-    // TODO: Implement smart contract execution
-})
+    
+    if (!code) {
+        return res.status(400).json({ message: 'Smart contract code is required' });
+    }
+
+    try {
+        const result = node.ExecuteSmartContract(code);
+        res.status(200).json({ result });
+    } catch (error) {
+        console.error('Error executing smart contract:', error);
+        res.status(500).json({ message: 'Failed to execute smart contract', error: error.message });
+    }
+});
 
 app.get('/mine', (req, res) => {
-    node.Mine()
-    res.status(200).json({ message: 'Block mined successfully' })
-})
+    try {
+        node.Mine();
+        res.status(200).json({ message: 'Block mined successfully' });
+    } catch (error) {
+        console.error('Error mining block:', error);
+        res.status(500).json({ message: 'Failed to mine block', error: error.message });
+    }
+});
+
 
 app.listen(port, () => {
     console.log(`Server listening on port ${port}`)
 });
+
+
