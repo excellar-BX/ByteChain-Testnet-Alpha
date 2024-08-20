@@ -1,4 +1,5 @@
 const bootstrapNodes = ['http://localhost:3500', 'http://localhost:3501'];
+const VM = require('../vm/virtualMachine')
 
 const Blockchain = require('./blockchain');
 const Wallet = require('../client/wallet')
@@ -36,6 +37,7 @@ class Node {
     }
 
     ExecuteSmartContract(code) {
+        const vm = new VM(this.blockchain)
         //TODO
     }
 
@@ -94,7 +96,7 @@ class Node {
             try {
                 const response = await axios.get(`${peerUrl}/blocks`);
                 const otherBlocks = response.data;
-                this.blockchain.syncBlocks(otherBlocks);
+                this.blockchain.SyncBlocks(otherBlocks);
             } catch (error) {
                 console.error(`Error syncing with peer ${peerUrl}:`, error.message);
             }
@@ -139,11 +141,6 @@ class Node {
     }
 }
 
-// const node = new Node() 
 
-// /* console.log(`This is your wallet info: Do not share your private key with anybody, but to receive bytes from another user send your Wallet Address \nPrivateKey: ${wallet.privateKey} \nPublicKey: ${wallet.publicKey} \nWalletAddress: ${wallet.blockchainAddress}`) */
-
-// const num = Buffer.from([0X17]);
-// console.log(num.toString('utf8'))
 
 module.exports = Node;

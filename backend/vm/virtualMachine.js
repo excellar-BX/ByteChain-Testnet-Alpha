@@ -1,7 +1,11 @@
+ //             TODO TODO TODO
+
 class VirtualMachine {
     constructor(blockchain) {
         this.blockchain = blockchain;
         this.state = {}; // Stores contract states
+        this.code = ''
+        this.sender = ''
     }
 
     ExecuteContract(code) {

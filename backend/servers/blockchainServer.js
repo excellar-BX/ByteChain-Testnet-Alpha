@@ -43,6 +43,29 @@ app.post('/add-new-transaction', (req, res) => {
     }
 });
 
+app.post('/add-new-contract', (req, res) => {
+    const { contract, publicKey } = req.body;
+
+    if (!contract || !publicKey) {
+        return res.status(400).json({ message: 'Incomplete request data' });
+    }
+
+    const parsedContract = JSON.parse(contract);
+    const parsedPublicKey = JSON.parse(publicKey)
+    
+    if (!parsedContract.code || !parsedContract.sender) {
+        return res.status(400).json({ message: 'Incomplete contract data' });
+    }
+
+    try {
+        node.ExecuteSmartContract(parsedContract, parsedPublicKey);
+        res.status(201).json({ message: 'Contract added successfully' });
+    } catch (error) {
+        console.error('Error adding contract:', error);
+        res.status(500).json({ message: 'Failed to add contract', error: error.message });
+    }
+});
+
 
 app.post('/smart-contract', (req, res) => {
     const { code } = req.body;

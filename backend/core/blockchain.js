@@ -87,24 +87,13 @@ class BlockChain {
         return balance.toFixed(8);
     }
 
-    //                                        TODO
-    // AllTransactionsMade(blockChainAddress) {
-    //     const trxs = []
-    //     const chain = this.chain;
-    //     chain.forEach(block => {
-    //         const transactions =  block.transactions;
-    //         transactions.forEach(transaction => {
-    //             const sender = transaction.sender;
-    //             const recipient = transaction.recipient;
-    //             if (blockChainAddress === sender || blockChainAddress === recipient) {
-    //                 trxs.push(transaction)
-    //             } else {
-    //                 return false;
-    //             }                
-    //         }); 
-    //     });
-    //     return trxs;
-    // }
+    AllTransactionsMade(blockChainAddress) {
+        // TODO
+    }
+
+    SyncBlocks(block) {
+        //TODO
+    }
 
     IsChainValid() {
         for (let i = 1; i < this.chain.length; i++) {

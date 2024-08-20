@@ -1,7 +1,6 @@
 const BlockChain = require('../core/blockchain');
 const Transaction = require('../core/transaction');
 const Wallet = require('../client/wallet');
-const wallet = new Wallet();
 const express = require('express');
 const { default: axios } = require('axios');
 const app = express();
@@ -67,13 +66,6 @@ app.post('/create-transaction', async (req, res) => {
         res.status(500).json({ message: 'Transaction failed', error: error.message });
     }
 });
-
-//                                           TODO
-// app.post('/create-new-contract', (req, res) => {
-//     //creating new contract logic
-//     //<TODO></TODO>
-//     res.status(201).json({ message: 'Contract added to blockchain successfully' })
-// });
 
 
 app.listen(port, () => {
