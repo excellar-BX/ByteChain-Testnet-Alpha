@@ -40,7 +40,7 @@ app.post('/add-new-transaction', (req, res) => {
     )
 
     try {
-        node.AddNewTransaction(newTransaction, publicKey);
+        node.AddTransaction(newTransaction, publicKey);
         res.status(201).json({ message: 'Transaction added successfully' });
         
     } catch (error) {

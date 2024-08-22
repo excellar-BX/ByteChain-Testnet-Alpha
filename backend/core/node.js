@@ -1,4 +1,4 @@
-const bootstrapNodes = ['http://localhost:3500', 'http://localhost:3501'];
+const bootstrapNodes = [];
 const VM = require('../vm/virtualMachine')
 
 const Blockchain = require('./blockchain');
@@ -31,7 +31,7 @@ class Node {
         });
     }
 
-    AddNewTransaction(transaction, pubKey) {        
+    AddTransaction(transaction, pubKey) {        
         this.blockchain.AddNewTransaction(transaction, pubKey);
         this.BroadCastTransaction(transaction);
     }

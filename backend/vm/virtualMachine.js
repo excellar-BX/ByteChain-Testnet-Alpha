@@ -1,11 +1,14 @@
+ const BlockChain = require('../core/blockchain')
+ 
+ const bytechain = new BlockChain()
  //             TODO TODO TODO
 
 class VirtualMachine {
-    constructor(blockchain) {
-        this.blockchain = blockchain;
-        this.state = {}; // Stores contract states
-        this.code = ''
-        this.sender = ''
+    constructor(code, sender) {
+        this.blockchain = bytechain;
+        this.state = {};
+        this.code = code;
+        this.sender = sender;
     }
 
     ExecuteContract(code) {
