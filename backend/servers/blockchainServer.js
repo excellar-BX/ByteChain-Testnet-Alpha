@@ -1,4 +1,5 @@
 const Node = require('../core/node');
+const Transaction = require('../core/transaction')
 
 const express = require('express');
 const app = express();
@@ -26,17 +27,22 @@ app.post('/add-new-transaction', (req, res) => {
     if (!transaction || !publicKey) {
         return res.status(400).json({ message: 'Incomplete request data' });
     }
-
-    const parsedTransaction = JSON.parse(transaction);
-    const parsedPublicKey = JSON.parse(publicKey)
     
-    if (!parsedTransaction.amount || !parsedTransaction.sender || !parsedTransaction.recipient) {
+    if (!transaction.amount || !transaction.sender || !transaction.recipient || !transaction.signature) {
         return res.status(400).json({ message: 'Incomplete transaction data' });
     }
 
+    const newTransaction = new Transaction(
+        transaction.amount,
+        transaction.sender,
+        transaction.recipient,
+        transaction.signature
+    )
+
     try {
-        node.AddNewTransaction(parsedTransaction, parsedPublicKey);
+        node.AddNewTransaction(newTransaction, publicKey);
         res.status(201).json({ message: 'Transaction added successfully' });
+        
     } catch (error) {
         console.error('Error adding transaction:', error);
         res.status(500).json({ message: 'Failed to add transaction', error: error.message });

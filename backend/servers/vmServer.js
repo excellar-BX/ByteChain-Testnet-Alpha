@@ -33,6 +33,6 @@ app.post('/create-new-contract', async (req, res) => {
 });
 
 
-app.use(port, () => {
+app.listen(port, () => {
     console.log(`Server listening on port ${port}`)
 })

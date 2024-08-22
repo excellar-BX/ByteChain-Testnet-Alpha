@@ -41,7 +41,7 @@ class BlockChain {
     //Creating and Adding a new transaction to the transaction pool
     AddNewTransaction(transaction, pubKey) {
         if (!(transaction instanceof Transaction)) {
-            throw new TypeError('Invalid transaction');
+            throw new TypeError('Invalid transaction format');
         }
 
         if (!transaction.IsValidTransaction(pubKey)) {

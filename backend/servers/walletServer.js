@@ -49,9 +49,9 @@ app.post('/create-transaction', async (req, res) => {
             message: 'Please provide all required fields'
         })
     }
-
-    const transaction = new Transaction(amount, sender, recipient);
-    transaction.SignTransaction(privateKey);
+    
+    const signature = trans.SignTransaction(privateKey);
+    const transaction = new Transaction(amount, sender, recipient, signature);
 
 
     const trxReq = { transaction, publicKey }

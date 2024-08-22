@@ -7,11 +7,11 @@ const wallet = new Wallet();
 
 // Transaction class
 class Transaction {
-    constructor (amount, sender, recipient) {
+    constructor (amount, sender, recipient, signature) {
         this.amount = amount;
         this.sender = sender;
         this.recipient = recipient; 
-        this.signature = null;
+        this.signature = signature;
     }
 
     HashTransaction() {
@@ -32,9 +32,9 @@ class Transaction {
         const hashedTransaction = this.HashTransaction();
         const keyFromPrivate = ec.keyFromPrivate(privateKey);
         const sig = keyFromPrivate.sign(hashedTransaction, 'base64');
-        this.signature = sig.toDER('hex');
+        const signature = sig.toDER('hex');
 
-        return this.signature;
+        return signature;
     }
 
     //Validating a transaction if it has been signed by the owner of a particular wallet
