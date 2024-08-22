@@ -17,5 +17,11 @@ function hashFunc(data) {
     return hashedData;
 }
 
+function hashTransaction(amount, sender, recipient) {
+    const transactionDataAsString = `${amount}${sender}${recipient}`;
+    const hashedTransaction = hashFunc(transactionDataAsString);
 
-module.exports = hashFunc;
+    return hashedTransaction;
+}
+
+module.exports = { hashFunc, hashTransaction };

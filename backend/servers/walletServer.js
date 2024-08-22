@@ -50,7 +50,7 @@ app.post('/create-transaction', async (req, res) => {
         })
     }
     
-    const signature = trans.SignTransaction(privateKey);
+    const signature = Transaction.SignTransaction(amount, sender, recipient, privateKey)
     const transaction = new Transaction(amount, sender, recipient, signature);
 
 
