@@ -29,7 +29,7 @@ class Block {
         this.merkleroot = this.CalculateMerkleRoot();
         while (true) {
             this.HashBlock();
-            if (this.blockHash.substring(0, MiningDifficulty) === '0'.repeat(MiningDifficulty)) {
+            if (this.HashBlock().substring(0, MiningDifficulty) === '0'.repeat(MiningDifficulty)) {
                 break;
             }
             this.nonce++;
